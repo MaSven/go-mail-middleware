@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/ProtonMail/gopenpgp/v3/crypto"
 	"github.com/wneessen/go-mail-middleware/log"
 )
 
@@ -25,7 +26,7 @@ const (
 	// HTML (or alternative body parts of the same type) will be ignored
 	SchemePGPInline PGPScheme = iota
 	// SchemePGPMIME represents the OpenPGP/MIME (RFC 4880 and 3156) scheme
-	SchemePGPMIME // Not supported yet
+	SchemePGPMIME
 )
 
 const (
@@ -58,7 +59,10 @@ type Config struct {
 	PublicKey string
 	// Schema represents one of the supported PGP encryption schemes
 	Scheme PGPScheme
-
+	//PublicKey for version 3 of openpgp
+	V3PublicKey crypto.Key
+	//PrivateKey for version 3 openpgp
+	V3PrivateKy crypto.Key
 	// passphrase is the passphrase for the private key
 	passphrase string
 }
@@ -121,7 +125,15 @@ func NewConfigFromKeyFiles(pr, pu string, o ...Option) (*Config, error) {
 // NewConfig returns a new Config struct. All values can be prefilled/overriden
 // using the With*() Option methods
 func NewConfig(pr, pu string, o ...Option) (*Config, error) {
-	c := &Config{PrivKey: pr, PublicKey: pu}
+	pubkey, err := crypto.NewKeyFromArmored(pu)
+	if err != nil {
+		return nil, fmt.Errorf("Publickey not in correct format or nil: %v", err)
+	}
+	privkey, err := crypto.NewKeyFromArmored(pr)
+	if err != nil {
+		return nil, fmt.Errorf("Private locked or not in correct format: %v", err)
+	}
+	c := &Config{PrivKey: pr, PublicKey: pu, V3PublicKey: *pubkey, V3PrivateKy: *privkey}
 
 	// Override defaults with optionally provided Option functions
 	for _, co := range o {

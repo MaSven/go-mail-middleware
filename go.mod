@@ -16,8 +16,12 @@ require (
 require (
 	github.com/ProtonMail/go-crypto v1.3.0 // indirect
 	github.com/ProtonMail/go-mime v0.0.0-20230322103455-7d82a3887f2f // indirect
+	github.com/ProtonMail/gopenpgp/v3 v3.3.0
 	github.com/cloudflare/circl v1.6.3 // indirect
+	github.com/emersion/go-message v0.18.2
 	github.com/pkg/errors v0.9.1 // indirect
 	golang.org/x/crypto v0.45.0 // indirect
 	golang.org/x/sys v0.38.0 // indirect
 )
+
+replace github.com/wneessen/go-mail v0.7.2 => github.com/MaSven/go-mail v0.7.3

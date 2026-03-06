@@ -36,6 +36,8 @@ func (m *Middleware) Handle(msg *mail.Msg) *mail.Msg {
 	switch m.config.Scheme {
 	case SchemePGPInline:
 		return m.pgpInline(msg)
+	case SchemePGPMIME:
+		return m.pgpMime(msg)
 	default:
 		m.config.Logger.Errorf("unsupported scheme %q. sending mail unencrypted", m.config.Scheme)
 	}
