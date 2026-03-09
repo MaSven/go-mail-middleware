@@ -93,9 +93,7 @@ func (m *Middleware) pgpMime(msg *mail.Msg) *mail.Msg {
 			continue
 		}
 		defer messagePartWriter.Close()
-		encoded := make([]byte, base64.StdEncoding.EncodedLen(len(c)))
-		base64.StdEncoding.Encode(encoded, c)
-		io.Writer.Write(messagePartWriter, encoded)
+		io.Writer.Write(messagePartWriter, c)
 	}
 	// Attachments
 	buf := bytes.Buffer{}
