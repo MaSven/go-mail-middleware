@@ -97,7 +97,7 @@ func (m *Middleware) pgpMime(msg *mail.Msg) *mail.Msg {
 		base64.StdEncoding.Encode(encoded, c)
 		io.Writer.Write(messagePartWriter, encoded)
 	}
-
+	// Attachments
 	buf := bytes.Buffer{}
 	af := msg.GetAttachments()
 	msg.SetAttachments(nil)
@@ -110,6 +110,7 @@ func (m *Middleware) pgpMime(msg *mail.Msg) *mail.Msg {
 			m.config.Logger.Errorf("failed to write attachment to memory: %s", err)
 			continue
 		}
+
 		messagePart.SetContentType(f.ContentType.String(), map[string]string{"name": f.Name})
 		messagePart.SetContentDisposition("attachment", map[string]string{"filename": f.Name})
 		messagePart.Header.Add(mail.HeaderContentTransferEnc.String(), mail.EncodingQP.String())
@@ -120,9 +121,7 @@ func (m *Middleware) pgpMime(msg *mail.Msg) *mail.Msg {
 		}
 		defer messagePartWriter.Close()
 		f.Writer(&buf)
-		encoded := make([]byte, base64.StdEncoding.EncodedLen(buf.Len()))
-		base64.StdEncoding.Encode(encoded, buf.Bytes())
-		io.Writer.Write(messagePartWriter, encoded)
+		io.Writer.Write(messagePartWriter, buf.Bytes())
 		buf.Reset()
 	}
 	pgp := cryptov3.PGPWithProfile(profile.RFC9580())
