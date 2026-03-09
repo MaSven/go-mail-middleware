@@ -1,5 +1,11 @@
 github.com/MaSven/go-mail v0.7.3 h1:4CTe2FEmpE1JfXhbzn5ZoesqA9C4+Z7lud6DA120A9A=
 github.com/MaSven/go-mail v0.7.3/go.mod h1:o8p1E0bhhGvh3M+yFzUB053MD4CXQF8qT/DVITJxGE4=
+github.com/MaSven/go-mail v0.7.4 h1:COvgYtUkO7d7kqBtJS/TiK75U5IlsaKpA4QL3JN11io=
+github.com/MaSven/go-mail v0.7.4/go.mod h1:o8p1E0bhhGvh3M+yFzUB053MD4CXQF8qT/DVITJxGE4=
+github.com/MaSven/go-mail v0.7.5 h1:c9HPxAvhF3tgrd1KFjohMjQoeX6G5tpUTIZYvIHLPAM=
+github.com/MaSven/go-mail v0.7.5/go.mod h1:o8p1E0bhhGvh3M+yFzUB053MD4CXQF8qT/DVITJxGE4=
+github.com/MaSven/go-mail v0.7.6 h1:D5FkDRUIhEi30HvonkKqy5Q3AXYNiVM9q4e/AH09Wdk=
+github.com/MaSven/go-mail v0.7.6/go.mod h1:o8p1E0bhhGvh3M+yFzUB053MD4CXQF8qT/DVITJxGE4=
 github.com/ProtonMail/go-crypto v1.3.0 h1:ILq8+Sf5If5DCpHQp4PbZdS1J7HDFRXz/+xKBiRGFrw=
 github.com/ProtonMail/go-crypto v1.3.0/go.mod h1:9whxjD8Rbs29b4XWbB8irEcE8KHMqaR2e7GWU1R+/PE=
 github.com/ProtonMail/go-mime v0.0.0-20230322103455-7d82a3887f2f h1:tCbYj7/299ekTTXpdwKYF8eBlsYsDVoggDAuAjoK66k=

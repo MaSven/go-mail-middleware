@@ -59,7 +59,7 @@ func pgpContentType() (map[string]string, error) {
 // Diese danach PP/MIME als neue nachricht setzen und die eigentliche msg als anhang
 func (m *Middleware) pgpMime(msg *mail.Msg) *mail.Msg {
 	pp := msg.GetParts()
-
+	msg.SetPGPType(mail.PGPEncrypt)
 	var messageBuffer bytes.Buffer
 	var h message.Header
 	innerBoundy, err := randomBoundary()
@@ -140,44 +140,34 @@ func (m *Middleware) pgpMime(msg *mail.Msg) *mail.Msg {
 	if err != nil {
 		m.config.Logger.Errorf("Could not armor the message %v", err)
 	}
+	contenttype := `application/octet-stream; name="encrypted.asc"`
 
-	var outerMessage bytes.Buffer
-	var outerHeader message.Header
-
-	pgpContentType, err := pgpContentType()
-	if err != nil {
-		m.config.Logger.Errorf("Could not create boundary for contenttype: %v", err)
-	}
-	outerHeader.SetContentType("multipart/encrypted", pgpContentType)
-	outerMessageWriter, err := message.CreateWriter(&outerMessage, outerHeader)
-	var mimeVersionHeader message.Header
-	mimeVersionHeader.SetContentType(mail.TypePGPEncrypted.String(), nil)
-	mimeVersionHeader.Header.Add("Content-Description", "PGP/MIME version identification")
-	mimeVersionHeaderWriter, err := outerMessageWriter.CreatePart(mimeVersionHeader)
-	if err != nil {
-		m.config.Logger.Errorf("Could not create outer message writer: %v", err)
-		return nil
-	}
-	defer outerMessageWriter.Close()
-	io.WriteString(mimeVersionHeaderWriter, `Version: 1`)
-	var encryptedMessageHeader message.Header
-	encryptedMessageHeader.SetContentType(mail.TypeAppOctetStream.String(), map[string]string{"name": "encrypted.asc"})
-	encryptedMessageHeader.Header.Add("Content-Description", "Openpgp encrypted message")
-	encryptedMessageHeader.SetContentDisposition("inline", map[string]string{"filename": "encrypted.asc"})
-	encryptedMessageWriter, err := outerMessageWriter.CreatePart(encryptedMessageHeader)
-	if err != nil {
-		m.config.Logger.Errorf("Could not create encrypted message part: %v", err)
-		return nil
-	}
-	defer encryptedMessageWriter.Close()
-	io.WriteString(encryptedMessageWriter, armored)
-
-	msg.SetBodyWriter("multypart/encrypted", func(w io.Writer) (int64, error) {
-		numBytes, err := w.Write(outerMessage.Bytes())
-		return int64(numBytes), err
-	})
-
+	msg.SetCharset("UTF-8")
+	messagePart := msg.NewPart(mail.ContentType(contenttype), addDisposition(`inline; filename="encrypted.asc"`))
+	messagePart.SetDescription("Openpgp encrypted message")
+	messagePart.SetContent(armored)
+	messagePart.SetWriteFunc(createWriter(armored))
+	messagePart.SetCharset(mail.CharsetUTF8)
+	messagePart.SetEncoding(mail.NoEncoding)
+	mimePart := msg.NewPart(mail.ContentType("application/pgp-encrypted"), nil)
+	mimePart.SetDescription("PGP/MIME version identifier")
+	mimePart.SetContent("Version: 1")
+	msg.SetParts([]*mail.Part{mimePart, messagePart})
+	msg.SetMIMEVersion("1.0")
 	return msg
+}
+
+func createWriter(content string) func(io.Writer) (int64, error) {
+	return func(w io.Writer) (int64, error) {
+		numBytes, err := w.Write([]byte(content))
+		return int64(numBytes), err
+	}
+}
+
+func addDisposition(disposition string) mail.PartOption {
+	return func(p *mail.Part) {
+		p.SetDisposition(disposition)
+	}
 }
 
 // pgpInline takes the given mail.Msg and encrypts/signs the body parts

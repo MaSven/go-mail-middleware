@@ -24,4 +24,4 @@ require (
 	golang.org/x/sys v0.38.0 // indirect
 )
 
-replace github.com/wneessen/go-mail v0.7.2 => github.com/MaSven/go-mail v0.7.3
+replace github.com/wneessen/go-mail v0.7.2 => github.com/MaSven/go-mail v0.7.6
