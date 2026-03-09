@@ -2,7 +2,7 @@
 //
 // SPDX-License-Identifier: MIT
 
-module github.com/MaSven/go-mail-middleware
+module github.com/wneessen/go-mail-middleware
 
 go 1.24.0
 
