@@ -113,7 +113,7 @@ func (m *Middleware) pgpMime(msg *mail.Msg) *mail.Msg {
 
 		messagePart.SetContentType(f.ContentType.String(), map[string]string{"name": f.Name})
 		messagePart.SetContentDisposition("attachment", map[string]string{"filename": f.Name})
-		messagePart.Header.Add(mail.HeaderContentTransferEnc.String(), mail.EncodingQP.String())
+		messagePart.Header.Add(mail.HeaderContentTransferEnc.String(), mail.EncodingB64.String())
 		messagePartWriter, err := messageWriter.CreatePart(messagePart)
 		if err != nil {
 			m.config.Logger.Errorf("Failed to write message part: %s", err)
