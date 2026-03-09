@@ -7,7 +7,6 @@ package openpgp
 import (
 	"bytes"
 	"crypto/rand"
-	"encoding/base64"
 	"fmt"
 	"io"
 
