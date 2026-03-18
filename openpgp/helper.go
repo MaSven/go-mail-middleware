@@ -117,7 +117,6 @@ func (m *Middleware) pgpMime(msg *mail.Msg) *mail.Msg {
 			continue
 		}
 		defer messagePartWriter.Close()
-		f.Writer(&buf)
 		io.Writer.Write(messagePartWriter, buf.Bytes())
 		buf.Reset()
 	}
